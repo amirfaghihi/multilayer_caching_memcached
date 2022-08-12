@@ -6,6 +6,22 @@ app:
   host: '0.0.0.0'
   port: '5000'
 
+postgres:
+    hostname: postgres
+    image: postgres:12.5
+    restart: always
+    volumes:
+      - /media/postgres/data/:/var/lib/postgresql/data/
+    shm_size: 1g 
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=tf_db
+      - LOG_LEVEL=ERROR
+      - TZ=Asia/Tehran
+    ports:
+      - "5432:5432"
+
 elastic:
   host: 'elastic'
   port: '9000'
@@ -26,23 +42,6 @@ cache:
     host: '0.0.0.0'
     port: '11211'
     expire: 604800
-
-#cache1:
-#  host: '0.0.0.0'
-#  port: '11211'
-#  expire: 1
-#
-#cache2:
-#  host: 'cache2'
-#  port: '11211'
-#  expire: 24
-#
-#cache3:
-#  host: 'cache3'
-#  port: '11211'
-#  expire: 168
-
-
 
 
 
