@@ -1,0 +1,48 @@
+app:
+  env: 'development'
+  debug: true
+  secretKey: 'secret_key'
+  jwtSecretKey: 'JWT_SECRET_KEY'
+  host: '0.0.0.0'
+  port: '5000'
+
+elastic:
+  host: 'elastic'
+  port: '9000'
+
+logging:
+  level: 'DEBUG'
+
+cache:
+  one:
+    host: '0.0.0.0'
+    port: '11211'
+    expire: 3600
+  two:
+    host: '0.0.0.0'
+    port: '11211'
+    expire: 86400
+  three:
+    host: '0.0.0.0'
+    port: '11211'
+    expire: 604800
+
+#cache1:
+#  host: '0.0.0.0'
+#  port: '11211'
+#  expire: 1
+#
+#cache2:
+#  host: 'cache2'
+#  port: '11211'
+#  expire: 24
+#
+#cache3:
+#  host: 'cache3'
+#  port: '11211'
+#  expire: 168
+
+
+
+
+

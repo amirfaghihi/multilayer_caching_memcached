@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  elastic-search:
+    image: docker.mofid.dev/docker.elastic.co/elasticsearch/elasticsearch:8.1.1
+    hostname: elastic
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - ES_SETTING_XPACK_SECURITY_ENABLED=false
+      - TZ=Asia/Tehran
+    volumes:
+      - /data/elastic:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+
+  api:
+    build: .
+    hostname: report_api
+    ports:
+      - "8000:8080"
+
+  memcached1:
+    image: docker.io/bitnami/memcached
+    hostname: cache1
+    restart: always
+    environment:
+      - MEMCACHED_CACHE_SIZE=64
+      - MEMCACHED_MAX_CONNECTIONS=2000
+    ports:
+      - '11211:11211'
+
+  memcached2:
+    image: docker.io/bitnami/memcached
+    hostname: cache2
+    restart: always
+    environment:
+      - MEMCACHED_CACHE_SIZE=128
+      - MEMCACHED_MAX_CONNECTIONS=2000
+    ports:
+      - '11212:11211'
+
+  memcached3:
+    image: docker.io/bitnami/memcached
+    hostname: cache3
+    restart: always
+    environment:
+      - MEMCACHED_CACHE_SIZE=256
+      - MEMCACHED_MAX_CONNECTIONS=2000
+    ports:
+      - '11213:11211'
