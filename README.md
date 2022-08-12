@@ -1,4 +1,4 @@
-# multilayer_caching_memcached
+# Multilayer Caching for Searching Service
 In this project I'm trying implement a 3-layer caching system for a searching service based on elasticsearch. Aside from **Dockerfiles** and **configs**, pretty much all of the project is developed using _Python Programming Language_. 
 In the following document, I'll provide information on the _project architecture_, _caching mechanism_, _dependency management_, _containarization_ and _preparing the project for deployment_. 
 
