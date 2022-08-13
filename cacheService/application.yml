@@ -27,5 +27,11 @@ cache:
     port: '11211'
     expire: 604800
 
+postgres:
+  host: '0.0.0.0'
+  port: 5432
+  username: 'postgres'
+  password: 'password'
+  db: 'queries'
 
 

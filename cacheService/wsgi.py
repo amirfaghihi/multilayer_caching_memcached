@@ -5,16 +5,21 @@ from cacheService.src.log import Logger
 from cacheService import config
 from cacheService.src.app import Server
 from cacheService.src.memcached import JsonSerde, MultilayerCache
+from cacheService.src.postgres.postgres import Postgres
 
 if __name__ == "__main__":
     service_name = 'cache_service'
 
+    # configs
     log_config = config['logging']
     app_config = config['app']
     elastic_config = config['elastic']
     cache_config = config['cache']
+    postgres_config = config['postgres']
 
     logger = Logger(log_level=log_config['level'])
+
+    postgres = Postgres(logger, postgres_config)
 
     # elastic_client = None  --> for test
     elastic_client = Elastic(elastic_config['host'], elastic_config['port'], logger)

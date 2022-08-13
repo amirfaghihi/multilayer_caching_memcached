@@ -4,12 +4,16 @@ from cacheService.src.log import Logger
 import threading
 import json
 
+from cacheService.src.models import SearchQuery
+from cacheService.src.tokenizer.tokenizer import standard_tokenizer
+
 
 class SearchCache(Resource):
-    def __init__(self, logger: Logger, elastic_client, multilayer_cache):
+    def __init__(self, logger: Logger, elastic_client, multilayer_cache, search_query_repo):
         self._logger = logger
         self._elastic_client = elastic_client
         self._multilayer_cache = multilayer_cache
+        self._search_query_repo = search_query_repo
 
     def get(self):
         try:
@@ -18,6 +22,11 @@ class SearchCache(Resource):
             args = parser.parse_args()
 
             query_string = args['query_string']
+            query_string_tokens = [query_string] + standard_tokenizer(query_string)
+
+            # bulk insert all of token queries into postgres
+            qs_dicts = [{'query_string': qs} for qs in query_string_tokens]
+            self._search_query_repo.bulk_insert(qs_dicts)
 
             result1 = self._multilayer_cache.cache1.get(query_string)
             # First cache miss
