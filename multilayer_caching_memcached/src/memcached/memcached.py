@@ -2,7 +2,7 @@ import json
 import time
 from concurrent.futures import ThreadPoolExecutor
 
-from cacheService.src.log import Logger
+from multilayer_caching_memcached.src.log import Logger
 
 
 class MultilayerCache:
@@ -13,19 +13,21 @@ class MultilayerCache:
         self.cache2 = cache2
         self.cache3 = cache3
 
-    def multilayer_cache_update(self, mode: int, key: str, result: dict):
+    def multilayer_cache_update(self, mode: int, keys: list, results: list):
+        values_dict = {}
+        for k in keys:
+            values_dict[k] = results
         if mode == 2:
-            with ThreadPoolExecutor(max_workers=3) as executor:
-                executor.submit(self.cache1.set, key, result, self._conf['one']['expire'])
+            self.cache1.set_multi(values_dict, self._conf['one']['expire'])
         elif mode == 3:
             with ThreadPoolExecutor(max_workers=2) as executor:
-                executor.submit(self.cache1.set, key, result, self._conf['one']['expire'])
-                executor.submit(self.cache2.set, key, result, self._conf['two']['expire'])
+                executor.submit(self.cache1.set_multi, values_dict, self._conf['one']['expire'])
+                executor.submit(self.cache2.set_multi, values_dict, self._conf['two']['expire'])
         else:
             with ThreadPoolExecutor(max_workers=3) as executor:
-                executor.submit(self.cache1.set, key, result, self._conf['one']['expire'])
-                executor.submit(self.cache2.set, key, result, self._conf['two']['expire'])
-                executor.submit(self.cache3.set, key, result, self._conf['three']['expire'])
+                executor.submit(self.cache1.set_multi, values_dict, self._conf['one']['expire'])
+                executor.submit(self.cache2.set_multi, values_dict, self._conf['two']['expire'])
+                executor.submit(self.cache3.set_multi, values_dict, self._conf['three']['expire'])
 
 
 class JsonSerde(object):

@@ -3,7 +3,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-from cacheService.src.log import Logger
+from multilayer_caching_memcached.src.log import Logger
 
 BASE_MODEL = declarative_base()
 
@@ -27,7 +27,7 @@ class Postgres:
                                                               self.conf['host'],
                                                               self.conf['port'],
                                                               self.conf['db']),
-                echo=self.conf.log_level)
+                echo=False)
             return engine
         except Exception as e:
             self.logger.exception(e)

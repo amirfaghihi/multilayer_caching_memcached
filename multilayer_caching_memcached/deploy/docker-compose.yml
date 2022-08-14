@@ -1,26 +1,26 @@
 version: '3'
 
 services:
-  elastic-search:
-    image: docker.mofid.dev/docker.elastic.co/elasticsearch/elasticsearch:8.1.1
-    hostname: elastic
-    restart: always
-    environment:
-      - discovery.type=single-node
-      - ES_SETTING_XPACK_SECURITY_ENABLED=false
-      - TZ=Asia/Tehran
-    volumes:
-      - /data/elastic:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
-      - 9300:9300
+        #elastic-search:
+        #  image: docker.mofid.dev/docker.elastic.co/elasticsearch/elasticsearch:8.1.1
+        #  hostname: elastic
+        #  restart: always
+        #  environment:
+        #    - discovery.type=single-node
+        #    - ES_SETTING_XPACK_SECURITY_ENABLED=false
+        #    - TZ=Asia/Tehran
+        #  volumes:
+        #    - /data/elastic:/usr/share/elasticsearch/data
+        #  ports:
+        #    - 9200:9200
+        #    - 9300:9300
 
   postgres:
     hostname: postgres
     image: postgres:12.5
     restart: always
     volumes:
-      - /media/postgres/data/:/var/lib/postgresql/data/
+      - ~/postgres/data:/var/lib/postgresql/data/
     shm_size: 1g 
     environment:
       - POSTGRES_USER=postgres
@@ -32,10 +32,13 @@ services:
       - "5432:5432"
 
   api:
-    build: .
-    hostname: report_api
+    image: multilayer_caching_memcached:0.1.3
+    hostname: multilayer_caching_memcached
     ports:
       - "8000:8080"
+    restart: always
+    volumes:
+      - /home/amir/Documents:/data
 
   memcached1:
     image: docker.io/bitnami/memcached

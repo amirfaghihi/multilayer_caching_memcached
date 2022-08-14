@@ -5,33 +5,35 @@ app:
   jwtSecretKey: 'JWT_SECRET_KEY'
   host: '0.0.0.0'
   port: '5000'
+  save_path: '/data'
+  config_path: './application.yml'
 
 elastic:
-  host: 'elastic'
-  port: '9000'
+  host: 'http://10.1.16.24'
+  port: '9200'
 
 logging:
   level: 'DEBUG'
 
 cache:
   one:
-    host: '0.0.0.0'
+    host: 'cache1'
     port: '11211'
     expire: 3600
   two:
-    host: '0.0.0.0'
+    host: 'cache2'
     port: '11211'
     expire: 86400
   three:
-    host: '0.0.0.0'
+    host: 'cache3'
     port: '11211'
     expire: 604800
 
 postgres:
-  host: '0.0.0.0'
+  host: 'postgres'
   port: 5432
   username: 'postgres'
-  password: 'password'
-  db: 'queries'
+  password: 'postgres'
+  db: 'tf_db'
 
 

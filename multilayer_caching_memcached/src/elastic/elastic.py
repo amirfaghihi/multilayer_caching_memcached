@@ -1,6 +1,6 @@
 from elasticsearch import Elasticsearch
 
-from cacheService.src.log import Logger
+from multilayer_caching_memcached.src.log import Logger
 
 
 class Elastic:

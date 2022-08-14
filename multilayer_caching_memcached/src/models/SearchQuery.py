@@ -2,7 +2,7 @@ from datetime import datetime
 
 from sqlalchemy import String, Column, DateTime, Integer
 
-from cacheService.src.postgres.postgres import BASE_MODEL
+from multilayer_caching_memcached.src.postgres.postgres import BASE_MODEL
 
 
 class SearchQuery(BASE_MODEL):

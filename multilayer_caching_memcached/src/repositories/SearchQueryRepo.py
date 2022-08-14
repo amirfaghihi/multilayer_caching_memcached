@@ -1,8 +1,8 @@
 from sqlalchemy import func
 
-from cacheService.src.log import Logger
-from cacheService.src.models import SearchQuery
-from cacheService.src.postgres.postgres import BaseRepo, Postgres
+from multilayer_caching_memcached.src.log import Logger
+from multilayer_caching_memcached.src.models import SearchQuery
+from multilayer_caching_memcached.src.postgres.postgres import BaseRepo, Postgres
 
 
 class SearchQueryRepo(BaseRepo):
@@ -18,11 +18,11 @@ class SearchQueryRepo(BaseRepo):
         self.postgres_client.session.bulk_insert_mappings(SearchQuery, search_queries)
 
     @BaseRepo.safe_exec
-    def find_tf_grouped_by_token(self, start: int, end: int, limit: int):
+    def find_tf_grouped_by_token(self, start, end, limit: int):
         query = self.postgres_client.session \
-            .query(SearchQuery, func.count(SearchQuery.query_string)) \
+            .query(SearchQuery.query_string, func.count(SearchQuery.query_string)) \
             .filter(SearchQuery.created_at.between(start, end)) \
-            .group_by(SearchQuery.query_string).limit(limit)
+            .group_by(SearchQuery.query_string).order_by(func.count(SearchQuery.query_string).desc()).limit(limit)
 
         result = query.all()
         return result
