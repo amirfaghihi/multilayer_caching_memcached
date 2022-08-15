@@ -1,6 +1,6 @@
 # Multilayer Caching for Searching Service
 In this project I'm trying implement a 3-layer caching system for a searching service based on elasticsearch. Aside from **Dockerfiles** and **configs**, pretty much all of the project is developed using _Python Programming Language_. 
-In the following document, I'll provide information on the _project design, _caching mechanism_, _dependency management_, _containarization_ and _preparing the project for deployment_. 
+In the following document, I'll provide information on the _project design_, _caching mechanism_, _dependency management_, _containarization_ and _preparing the project for deployment_. 
 
 ## Design & architecture
 The basic initial architecture of this project is as follows:
@@ -9,15 +9,9 @@ The basic initial architecture of this project is as follows:
 
 
 
-We use three layers of cache for our service. To implement caching services, [**Memcached**](https://memcached.org/) and [**Redis**](https://redis.io/) are the most popular choices. I've chosen to use **Memcached** because although it's less feature-rich than **Redis**, it handles large amounts of data better and it's also supports multithreading. So I've considered three services in my _docker-compose.yml_ file which is located [here](https://github.com/amirfaghihi/multilayer_caching_memcached/blob/main/cacheService/deploy/docker-compose.yml). Using below commands we can setup **Memcached** services that we need:
+We use three layers of cache for our service. To implement caching services, [**Memcached**](https://memcached.org/) and [**Redis**](https://redis.io/) are the most popular choices. I've chosen to use **Memcached** because although it's less feature-rich than **Redis**, it handles large amounts of data better and it's also supports multithreading. 
 
-`docker-compose up -d memcached1`
-
-`docker-compose up -d memcached2`
-
-`docker-compose up -d memcached3`
-
-Now that we've set up our cache services, we need to decide what to store in these cache memories. Here, we want to keep track of the term frequencies of the searched queries. The first idea that came to mind was to store the term frequencies alongside returned values inside cache layers like this:
+Now we need to decide what to store in these cache memories. Here, we want to keep track of the term frequencies of the searched queries. The first idea that came to mind was to store the term frequencies alongside returned values inside cache layers like this:
 
 `{"result": <returned value>, "freq": <term frequency>}`
 
@@ -32,5 +26,40 @@ The problem that I faced after implementing all this mechanism, was that it's ki
 
 Overall I would say, maybe using **Memcached** for our caching service, wasn't the best choice and maybe using **Redis** here would be better.
 
+## Build & Deploy
+
+I've considered three services in my _docker-compose.yml_ file which is located [here](https://github.com/amirfaghihi/multilayer_caching_memcached/blob/main/cacheService/deploy/docker-compose.yml). Using below commands we can setup **Memcached** services that we need:
+
+`docker-compose up -d memcached1`
+
+`docker-compose up -d memcached2`
+
+`docker-compose up -d memcached3`
+
+Also I've included the **Elasticsearch** service in docker-compose.yml file where we can use as our search engine.
+
+As for our **API** service, first we need to build the docker image. We accomplish this by using two Makefiles, [Packages.mk](https://github.com/amirfaghihi/multilayer_caching_memcached/blob/report_from_postgres/builder-tools/Packages.mk) and [Containers.mk](https://github.com/amirfaghihi/multilayer_caching_memcached/blob/report_from_postgres/builder-tools/Containers.mk). Using the first makefile, we build python wheel files. The second makefile is to build the docker image with a specific tag based on the service version. To do this you need to specify the version of the service in [pyproject.toml](https://github.com/amirfaghihi/multilayer_caching_memcached/blob/report_from_postgres/pyproject.toml) file and the then simply execute the make command:
+
+`make`
+
+After building the project to setup the container, you can go to the docker-compose.yml file and execute the following:
+
+`docker-compose up -d api`
+
+If you want, you can push the created image to your docker registry. For example, let's say your image tag is some.registry.com/multilayer_caching_memcached:0.1.3. After build the image by executing the following commands, you can push the image into the docker registry:
+
+`docker login some.registry.com`
+
+`docker push some.registry.com/multilayer_caching_memcached:0.1.3`
+
+And to setup the API, you simply need to specify the full image tag in your docker-compose.yml file, and providing it's got access to the docker registry, it will automatically pull the specified image from the docker registry. 
 
 
+## Stack
+The technologies we used in this project are as follows:
+1. Python
+2. Flask and Flask RESTFul
+3. SQLAlchemy
+4. Memcached
+5. PostgreSQL
+6. Elasticsearch
